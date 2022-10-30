@@ -60,6 +60,11 @@ router.route("/")
 
 
 router
+    .route("/test")
+    .post(toolsController.test)
+    .get(toolsController.testGet);
+
+router
     .route("/:id")
     .get(viewCount, limiter, toolsController.getToolDetails)
     .patch(toolsController.updateTool)

@@ -8,6 +8,7 @@ const port = process.env.PORT || 5000;
 const toolsRoutes = require("./routes/v1/tools.route");
 const viewCount = require("./middleware/viewCount.js");
 const errorHandler = require("./middleware/errorHandler.js");
+const { connectToServer } = require("./utils/dbConnect.js");
 
 app.use(cors());
 app.use(express.json());
@@ -15,9 +16,18 @@ app.use(express.static("public"));
 app.set("view engine", "ejs");
 
 // application level middleware
-app.use(viewCount);
+// app.use(viewCount);
 
-dbConnect();
+connectToServer((err) => {
+  if (!err) {
+    app.listen(port, () => {
+      console.log(`Example app listening on port ${port}`);
+    });
+  }
+  else {
+    console.log(err);
+  }
+});
 
 app.use("/api/v1/tools", toolsRoutes);
 
@@ -39,11 +49,6 @@ app.all("*", (req, res) => {
 
 // global error handler
 app.use(errorHandler);
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
-
 
 // error handler 
 // if express can not handle the error by itself
